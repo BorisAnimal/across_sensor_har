@@ -3,15 +3,17 @@ import os
 import numpy as np
 import pandas as pd
 from keras.utils import to_categorical
-
+# src.data.
 from src.data.shl_data import body_locations, feature_columns, labels, users
 
 dirname = os.path.dirname(__file__)
 
 def generate_dataframe(dir_path, mode="Hips"):
     """Generate csv from {mode}.txt with dir_path pointing to directory with file"""
+    label_data = pd.DataFrame(np.loadtxt(f"{dir_path}/Label.txt"), columns=["Time(ms)", "Coarse", "Fine", "Road",
+                                                                            "Traffic", "Tunnels", "Social", "Food"])
     data = pd.DataFrame(np.loadtxt(f"{dir_path}/{mode}_Motion.txt"), columns=["Time(ms)"] +feature_columns)
-    label_data = pd.DataFrame(np.loadtxt(f"{dir_path}/Label.txt"), columns=["Time(ms)"] + labels)
+
     assert(label_data.shape[0] == data.shape[0])
     data.set_index(pd.to_datetime(data['Time(ms)'], unit='ms'), inplace=True)
     label_data.set_index(pd.to_datetime(label_data['Time(ms)'], unit='ms'), inplace=True)
@@ -23,13 +25,17 @@ def generate_dataframe(dir_path, mode="Hips"):
 
 
 def raw_to_hdf():
-    for mode in body_locations:
-        for user in users:
-            _, subdirectories, _ = next(os.walk(f"../data/raw/{user}/"))
-            for subdirectory in subdirectories:
-                print("Loading...", user, subdirectory)
-                data = generate_dataframe(f"{user}/{subdirectory}", mode=mode)
-                data.to_hdf(f"../data/interim/{mode.lower()}_data/{user}_{subdirectory}.hdf5", key="shl")
+    mode="Hips"
+    # for mode in body_locations:
+    for user in users:
+        _, subdirectories, _ = next(os.walk(os.path.abspath(f"raw/{user}/")))
+        for subdirectory in subdirectories:
+            print("Loading...", user, subdirectory)
+            data = generate_dataframe(f"raw/{user}/{subdirectory}")
+            kek = f"../../data/interim/{mode.lower()}_data/"
+            if not os.path.exists(kek):
+                os.makedirs(kek)
+            data.to_hdf(f"../../data/interim/{mode.lower()}_data/{user}_{subdirectory}.hdf5", key="shl")
 
 # TODO: pass subsampling parameter to go from 100Hz to another value
 def data_sequencer(data: pd.DataFrame, sequence_length = 500,
@@ -74,5 +80,9 @@ def csv_to_npy_batches():
                 np.save(f"{dirname}/../../data/processed/X/{mode.lower()}/{file}_{i}", X)
                 np.save(f"{dirname}/../../data/processed/Y/{mode.lower()}/{file}_{i}", Y)
 
+
+if not os.path.exists("../../data/interim"):
+    print("Extracting raw dataset:")
+    raw_to_hdf()
 
 csv_to_npy_batches()

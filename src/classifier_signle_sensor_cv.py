@@ -5,7 +5,7 @@ import keras.backend as K
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import seaborn as sns
+# import seaborn as sns
 from keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
 from keras.layers import (LSTM, Concatenate, Conv1D, Conv2DTranspose,
                           CuDNNLSTM, Dense, Dropout, Flatten, Input, Lambda,
@@ -26,7 +26,8 @@ def s_gen(generator, s1):
         x = (x - x_min) / (x_max - x_min)
         x = x * 2 - 1
         s1_x = x[:, :, :, s1]
-        yield s1_x,  y
+        yield s1_x, y
+
 
 def get_encoder_dense(inp):
     h = Flatten()(inp)
@@ -36,10 +37,12 @@ def get_encoder_dense(inp):
     h = Dropout(0.1)(features)
     return h
 
+
 def get_classifier(inp):
     h = Dense(128, activation="relu")(inp)
-    h = Dense(19, activation = "softmax")(h)
+    h = Dense(19, activation="softmax")(h)
     return h
+
 
 def get_callbacks(i, model_name):
     es = EarlyStopping(patience=5)
@@ -47,13 +50,15 @@ def get_callbacks(i, model_name):
     rlr = ReduceLROnPlateau(patience=3)
     return [es, mc, rlr]
 
+
 def get_model():
     inp = Input(batch_shape=(128, 500, 3))
     features = get_encoder_dense(inp)
     out_cls = get_classifier(features)
     model = Model(inp, out_cls)
-    model.compile("rmsprop",  "categorical_crossentropy", metrics=["accuracy"])
+    model.compile("rmsprop", "categorical_crossentropy", metrics=["accuracy"])
     return model
+
 
 x_min = shl_min()[np.newaxis, np.newaxis, :]
 x_max = shl_max()[np.newaxis, np.newaxis, :]
@@ -68,7 +73,6 @@ logger.info("CV base classifier have started.")
 sensors = ["accel", "gyro", "mag"]
 sources = [0, 1, 2]
 
-
 for in_sensor in sources:
     model_name = f"base_{sensors[in_sensor]}"
     for i in range(5):
@@ -79,14 +83,14 @@ for in_sensor in sources:
         model = get_model()
         logger.info(f"Processing {model_name}_fold_{i}...")
         history = model.fit_generator(train_gen, steps_per_epoch=748, epochs=300,
-                callbacks = get_callbacks(i, model_name), verbose = 1,
-                validation_data = test_gen, validation_steps = 187)
+                                      callbacks=get_callbacks(i, model_name), verbose=1,
+                                      validation_data=test_gen, validation_steps=187)
 
-        history_data =  np.array([history.history['val_acc'],
-                                    history.history['val_loss'],
-                                    history.history['acc'],
-                                    history.history['loss']])
+        history_data = np.array([history.history['val_acc'],
+                                 history.history['val_loss'],
+                                 history.history['acc'],
+                                 history.history['loss']])
 
-        np.save(f"histories/{model_name}_fold_{i}", history_data)  
+        np.save(f"histories/{model_name}_fold_{i}", history_data)
 
         logger.info(f"{model_name} finished")

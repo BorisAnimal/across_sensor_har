@@ -6,7 +6,6 @@ import numpy as np
 import pandas as pd
 import src.data.shl_data as shl
 import os
-dirname = os.path.dirname(__file__)
 
 
 dirname = os.path.dirname(__file__)

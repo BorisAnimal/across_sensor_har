@@ -3,7 +3,7 @@ import numpy as np
 import os
 from src.data.shl_data import shl_min, shl_max, mean, std
 from tqdm import tqdm
-import seaborn as sns
+# import seaborn as sns
 import shutil
 from loguru import logger
 
@@ -12,7 +12,8 @@ x_max = shl_max()[np.newaxis, np.newaxis, :]
 x_mean = mean()
 x_std = std()
 
-base = "data/interim/hips/data"
+# base = "data/interim/hips/data"
+base = "data/interim/hips_data"
 
 logger.add("duplex_fe_cv.log", format="{time:YYYY-MM-DD at HH:mm:ss} | {level} | {message}")
 logger.info("CV feature extraction has started.")

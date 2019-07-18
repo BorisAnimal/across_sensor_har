@@ -3,7 +3,7 @@ import os
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-import seaborn as sns
+# import seaborn as sns
 from keras.callbacks import EarlyStopping
 from keras.layers import Dense, Dropout
 from keras.models import Model, Sequential, load_model
@@ -13,7 +13,7 @@ from tqdm import tqdm
 
 from src.data.shl_data import labels, mean, shl_max, shl_min, std
 
-
+# Вот здесь то и происходит склейка фич !!!!
 def get_feature_xy(fnames, bases):
     label_base = "data/interim/hips/labels_sp/"
     features = []
@@ -51,8 +51,8 @@ logger.add("file.log", format="{time:YYYY-MM-DD at HH:mm:ss} | {level} | {messag
 logger.info("Cross-validation have started.")
 
 modalities_combinations = [[((0, 0),), ((0, 0), (0, 1)), ((0, 0), (0, 2)), ((0, 0), (0, 1), (0, 2))],
-                          [((1, 1),), ((1, 1), (1, 0)), ((1, 1), (1, 2)), ((1, 1), (1, 0), (1, 2))],
-                          [((2, 2),), ((2, 2), (2, 0)), ((2, 2), (2, 1)), ((2, 2), (2, 0), (2, 1))]]
+                           [((1, 1),), ((1, 1), (1, 0)), ((1, 1), (1, 2)), ((1, 1), (1, 0), (1, 2))],
+                           [((2, 2),), ((2, 2), (2, 0)), ((2, 2), (2, 1)), ((2, 2), (2, 0), (2, 1))]]
 histories = {}
 for modality in tqdm(modalities_combinations, desc="Modalities"):
     for sensors_combinations in tqdm(modality, desc="Feature combinations"):

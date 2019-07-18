@@ -82,8 +82,8 @@ for model_name, (in_sensor, out_sensor) in tqdm(list(zip(model_names, modalities
         if (model_name == "mag2mag_duplex") and (i < 2):
                 continue
         else:
-                train_fnames = np.load(f"data/filenames/s2s_fold{i}/train_filenames.npy")
-                val_fnames = np.load(f"data/filenames/s2s_fold{i}/val_filenames.npy")
+                # train_fnames = np.load(f"data/filenames/s2s_fold{i}/train_filenames.npy")
+                # val_fnames = np.load(f"data/filenames/s2s_fold{i}/val_filenames.npy")
                 train_generator, test_generator = create_generators("hips", f"s2s_fold{i}")
                 train_gen, test_gen = s2s_duplex_gen(train_generator, in_sensor, out_sensor), s2s_duplex_gen(test_generator, in_sensor, out_sensor)
                 model = get_model()
