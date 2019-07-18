@@ -16,6 +16,7 @@ Here happens features (latent spaces) cluing!!!
 """
 def get_feature_xy(fnames, bases):
     "Loads features extracted by an autoencoder."
+    # TODO: change path
     label_base = "data/interim/hips/labels_sp/"
     features = []
     f_labels = []

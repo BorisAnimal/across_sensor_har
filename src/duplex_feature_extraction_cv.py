@@ -44,6 +44,7 @@ for model_name, (in_sensor, out_sensor) in tqdm(list(zip(model_names, modalities
             x = (x - x_min) / (x_max - x_min)
             x = x * 2 - 1
 
+
             features = feature_encoder.predict(x[:, :, :, in_sensor])
             np.save(f"data/interim/hips/best_fold{i}_{model_name}_features/{fname}", features)
             rmse = np.mean(np.square(model.predict(x[:, :, :, in_sensor], verbose=0)[0] - x[:, :, :, out_sensor]), axis=1)

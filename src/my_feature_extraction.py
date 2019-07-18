@@ -1,8 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[19]:
-
 import os
 
 import numpy as np
@@ -12,8 +7,6 @@ from tqdm import tqdm
 
 from src.data.shl_data import shl_min, shl_max, mean, std
 
-
-# In[1]:
 
 # Define parameters
 

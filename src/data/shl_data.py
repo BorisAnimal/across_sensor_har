@@ -1,6 +1,7 @@
-import pandas as pd
-import numpy as np
 import os
+
+import numpy as np
+import pandas as pd
 
 dirname = os.path.dirname(__file__)
 
@@ -9,25 +10,35 @@ This file contains constant values from dataset description file:
 http://www.shl-dataset.org/wp-content/uploads/2017/11/doc_dataset.pdf
 """
 
+mean_filename = os.path.join(dirname, "../../data/processed/mean.csv")
+
 
 def mean():
-    filename = os.path.join(dirname, "../../data/processed/mean.csv")
-    mean_df = pd.read_csv(filename, header=None, index_col=0)
-    return mean_df.iloc[:,0][np.r_[0:9, 10:19]].values.reshape((1, 1, 3, 6))
-    
+    mean_df = pd.read_csv(mean_filename, header=None, index_col=0)
+    return mean_df.iloc[:, 0][np.r_[0:9, 10:19]].values.reshape((1, 1, 3, 6))
+
+
+std_filename = os.path.join(dirname, "../../data/processed/std.csv")
+
+
 def std():
-    filename = os.path.join(dirname, "../../data/processed/std.csv")
-    mean_df = pd.read_csv(filename, header=None, index_col=0)
-    return mean_df.iloc[:,0][np.r_[0:9, 10:19]].values.reshape((1, 1, 3, 6))
+    mean_df = pd.read_csv(std_filename, header=None, index_col=0)
+    return mean_df.iloc[:, 0][np.r_[0:9, 10:19]].values.reshape((1, 1, 3, 6))
+
+
+max_filename = os.path.join(dirname, "../../data/processed/max.npy")
+
 
 def shl_max():
-    filename = os.path.join(dirname, "../../data/processed/max.npy")
+    return np.load(max_filename)
 
-    return np.load(filename)
+
+min_filename = os.path.join(dirname, "../../data/processed/min.npy")
+
 
 def shl_min():
-    filename = os.path.join(dirname, "../../data/processed/min.npy")
-    return np.load(filename)
+    return np.load(min_filename)
+
 
 labels = [x.split("=")[0] for x in """Null= 0
     Still;Stand;Outside= 1
@@ -49,7 +60,8 @@ labels = [x.split("=")[0] for x in """Null= 0
     Subway;Stand= 17
     Subway;Sit= 18""".split("\n")]
 
-feature_columns = """acc_x acc_y acc_z gyr_x gyr_y gyr_z mag_x mag_y mag_z orient_w orient_x orient_y orient_z grav_x grav_y grav_z lin_acc_x lin_acc_y lin_acc_z pressure ignore ignore""".split(" ")
+feature_columns = """acc_x acc_y acc_z gyr_x gyr_y gyr_z mag_x mag_y mag_z orient_w orient_x orient_y orient_z grav_x grav_y grav_z lin_acc_x lin_acc_y lin_acc_z pressure ignore ignore""".split(
+    " ")
 
 body_locations = ["Bag", "Torso", "Hips", "Hand"]
 
@@ -57,7 +69,9 @@ users = ["User1", "User2", "User3"]
 
 all_labels = {}
 all_labels['Coarse'] = "Null Still Walking Run Bike Car Bus Train Subway".split()
-all_labels['Fine'] = """Null Still;Stand;Outside Still;Stand;Inside Still;Sit;Outside Still;Sit;Inside Walking;Outside Walking;Inside Run Bike Car;Driver Car;Passenger Bus;Stand Bus;Sit Bus;Up;Stand Bus;Up;Sit Train;Stand Train;Sit Subway;Stand Subway;Sit""".split(" ")
+all_labels[
+    'Fine'] = """Null Still;Stand;Outside Still;Stand;Inside Still;Sit;Outside Still;Sit;Inside Walking;Outside Walking;Inside Run Bike Car;Driver Car;Passenger Bus;Stand Bus;Sit Bus;Up;Stand Bus;Up;Sit Train;Stand Train;Sit Subway;Stand Subway;Sit""".split(
+    " ")
 all_labels['Road'] = "Null, City=1, Motorway=2, Countryside=3, Dirt road=4".split(",")
 all_labels['Food'] = "Null, Eating=1, Drinking=2, Both=3".split(",")
 all_labels['Tunnels'] = "Null Tunnel".split(" ")

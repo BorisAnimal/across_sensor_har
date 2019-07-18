@@ -10,6 +10,7 @@ __pycache__/
 data/
 src/data/SHL/
 src/data/raw
+tmp.ipynb
 
 # Distribution / packaging
 .Python
