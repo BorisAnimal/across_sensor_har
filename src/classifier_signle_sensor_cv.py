@@ -1,21 +1,17 @@
-import os
-import shutil
-
-import keras.backend as K
-import matplotlib.pyplot as plt
 import numpy as np
-import pandas as pd
-# import seaborn as sns
 from keras.callbacks import EarlyStopping, ModelCheckpoint, ReduceLROnPlateau
-from keras.layers import (LSTM, Concatenate, Conv1D, Conv2DTranspose,
-                          CuDNNLSTM, Dense, Dropout, Flatten, Input, Lambda,
-                          RepeatVector, Reshape)
-from keras.models import Model, Sequential, load_model
+from keras.layers import (Dense, Dropout, Flatten, Input)
+from keras.models import Model
 from loguru import logger
-# from tqdm import tqdm
 
 from src.data.generators import create_generators
 from src.data.shl_data import mean, shl_max, shl_min, std
+
+
+"""
+Were trained 3 models. 1 sensor with 1 encoder (no decoder)
+and then right after encoder is classifier layers.
+"""
 
 
 def s_gen(generator, s1):
@@ -76,8 +72,6 @@ sources = [0, 1, 2]
 for in_sensor in sources:
     model_name = f"base_{sensors[in_sensor]}"
     for i in range(5):
-        train_fnames = np.load(f"data/filenames/s2s_fold{i}/train_filenames.npy")
-        val_fnames = np.load(f"data/filenames/s2s_fold{i}/val_filenames.npy")
         train_generator, test_generator = create_generators("hips", f"s2s_fold{i}")
         train_gen, test_gen = s_gen(train_generator, in_sensor), s_gen(test_generator, in_sensor)
         model = get_model()

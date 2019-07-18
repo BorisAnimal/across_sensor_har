@@ -1,18 +1,24 @@
-from keras.models import load_model, Model
-import numpy as np
 import os
-from src.data.shl_data import shl_min, shl_max, mean, std
-from tqdm import tqdm
-# import seaborn as sns
-import shutil
+
+import numpy as np
+from keras.models import load_model, Model
 from loguru import logger
+from tqdm import tqdm
+
+from src.data.shl_data import shl_min, shl_max, mean, std
+
+
+"""
+In this file performs interaction through all autoencoders and 
+their features from latent spaces collected in files (cached).
+"""
+
 
 x_min = shl_min()[np.newaxis, np.newaxis, :]
 x_max = shl_max()[np.newaxis, np.newaxis, :]
 x_mean = mean()
 x_std = std()
 
-# base = "data/interim/hips/data"
 base = "data/interim/hips_data"
 
 logger.add("duplex_fe_cv.log", format="{time:YYYY-MM-DD at HH:mm:ss} | {level} | {message}")

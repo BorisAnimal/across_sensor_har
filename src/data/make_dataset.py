@@ -8,6 +8,12 @@ from src.data.shl_data import body_locations, feature_columns, labels, users
 
 dirname = os.path.dirname(__file__)
 
+"""
+This code extracts dataset.
+In future folding will be done in generators.py file.
+"""
+
+
 def generate_dataframe(dir_path, mode="Hips"):
     """Generate csv from {mode}.txt with dir_path pointing to directory with file"""
     label_data = pd.DataFrame(np.loadtxt(f"{dir_path}/Label.txt"), columns=["Time(ms)", "Coarse", "Fine", "Road",

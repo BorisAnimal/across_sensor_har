@@ -1,19 +1,19 @@
-import os
-
-import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-# import seaborn as sns
-from keras.callbacks import EarlyStopping
 from keras.layers import Dense, Dropout
-from keras.models import Model, Sequential, load_model
+from keras.models import Sequential
 from loguru import logger
-from sklearn.model_selection import train_test_split
 from tqdm import tqdm
 
-from src.data.shl_data import labels, mean, shl_max, shl_min, std
 
-# Вот здесь то и происходит склейка фич !!!!
+"""
+In this file all collected features from autoencoders 
+gathering and passed to single classifier.
+"""
+
+"""
+Here happens features (latent spaces) cluing!!!
+"""
 def get_feature_xy(fnames, bases):
     label_base = "data/interim/hips/labels_sp/"
     features = []

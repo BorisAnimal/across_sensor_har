@@ -4,6 +4,12 @@ import os
 
 dirname = os.path.dirname(__file__)
 
+"""
+This file contains constant values from dataset description file:
+http://www.shl-dataset.org/wp-content/uploads/2017/11/doc_dataset.pdf
+"""
+
+
 def mean():
     filename = os.path.join(dirname, "../../data/processed/mean.csv")
     mean_df = pd.read_csv(filename, header=None, index_col=0)

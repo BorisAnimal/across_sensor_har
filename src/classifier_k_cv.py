@@ -7,10 +7,10 @@ from loguru import logger
 from src.data.generators import create_generators
 from src.data.shl_data import mean, shl_max, shl_min, std
 
-# from tqdm import tqdm
-
 """
-This is K-Fold validation for DNN classifier
+This is K-Fold validation for DNN classifier.
+All 3 sensors used. All of them were used in single encoder. Without decoder part.
+And right after, single latent space was passed to classifier.
 """
 
 
@@ -89,7 +89,6 @@ base = "data/interim/hips/data"
 logger.add("classifier_1_k_cv.log", format="{time:YYYY-MM-DD at HH:mm:ss} | {level} | {message}")
 logger.info("CV base classifier have started.")
 
-
 # Select sensors and their indices over which we will CV
 # sensors = ["accel", "gyro", "mag"]
 # sources = [0, 1, 2]
@@ -103,9 +102,6 @@ for i in range(5):
     # # Filenames for each fold are stored in .npy. Load filenames.
     # train_fnames = np.load(f"data/filenames/s2s_fold{i}/train_filenames.npy")
     # val_fnames = np.load(f"data/filenames/s2s_fold{i}/val_filenames.npy")
-
-
-
     # Min max scaling
     train_gen, test_gen = s_gen(train_generator), s_gen(test_generator)
     model = get_model()

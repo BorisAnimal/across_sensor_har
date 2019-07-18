@@ -10,6 +10,11 @@ import os
 
 dirname = os.path.dirname(__file__)
 
+"""
+This functions creates input data. You can use it only after
+executing make_dataset.py
+"""
+
 def _split_filenames(filenames, splits = 6):
     random.shuffle(filenames)
     filenames = filenames[:np.floor(len(filenames)/splits)*splits] # To avoid uneven splits in np.split
