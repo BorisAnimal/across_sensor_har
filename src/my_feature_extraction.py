@@ -27,7 +27,8 @@ sens_id = 1 # "gyro"
 
 for out_sensor in out_sensors:
     for i in tqdm(range(5), desc="Folds", leave=False):
-        model_name = f"{in_sensor}2{out_sensor}_duplex"
+        # like this, because here we need EXACT hidden space representation
+        model_name = f"{out_sensor}2{out_sensor}_duplex"
 
         tmp = f"../data/interim/hips/best_fold{i}_{model_name}_features"
         if not os.path.exists(tmp):
