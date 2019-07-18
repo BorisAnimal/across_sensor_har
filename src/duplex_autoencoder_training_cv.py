@@ -26,6 +26,13 @@ x_std = std()
 
 
 def s2s_duplex_gen(generator, s1, s2):
+    """
+    Duplex generator, min-max_scaling + sensor selection
+    :param generator:
+    :param s1:  input sensor
+    :param s2: output sensor
+    :return:
+    """
     x_min = shl_min()[np.newaxis, np.newaxis, :]
     x_max = shl_max()[np.newaxis, np.newaxis, :]
     while True:
@@ -38,6 +45,7 @@ def s2s_duplex_gen(generator, s1, s2):
 
 
 def get_encoder_dense(inp):
+    "Dense encoder"
     h = Flatten()(inp)
     h = Dense(1024, activation="relu")(h)
     h = Dense(512, activation="relu")(h)
@@ -47,6 +55,8 @@ def get_encoder_dense(inp):
 
 
 def get_decoder_dense(inp):
+    "Dense decoder"
+
     h = Dense(512, activation="relu")(inp)
     h = Dense(1024, activation="relu")(h)
     h = Dense(1500, activation="tanh")(h)
@@ -77,22 +87,23 @@ def get_model():
     return model
 
 
+# Sensors among which we will iterate
 sensors = ["accel", "gyro", "mag"]
 sources = [0] * 3 + [1] * 3 + [2] * 3
 destinations = [0, 1, 2] * 3
+
+# all possibile combinations of across-sensor relations
 modalities = list(zip(sources, destinations))
 model_names = [f"{sensors[x]}2{sensors[y]}_duplex" for (x, y) in modalities]
 
 logger.add("duplex_ae_cv.log", format="{time:YYYY-MM-DD at HH:mm:ss} | {level} | {message}")
 logger.info("CV autoencoder fit process has started.")
+
+# Iterate over all sensor combinations
 for model_name, (in_sensor, out_sensor) in tqdm(list(zip(model_names, modalities))[8:], total=9, desc="Modalities"):
     for i in tqdm(range(5), desc="Folds", leave=False):
-        if (model_name == "mag2mag_duplex") and (i < 2):
-            continue
-        else:
             train_generator, test_generator = create_generators("hips", f"s2s_fold{i}")
-            train_gen, test_gen = s2s_duplex_gen(train_generator, in_sensor, out_sensor), s2s_duplex_gen(test_generator,
-                                                                                                         in_sensor,
+            train_gen, test_gen = s2s_duplex_gen(train_generator, in_sensor, out_sensor), s2s_duplex_gen(test_generator, in_sensor,
                                                                                                          out_sensor)
             model = get_model()
             logger.info(f"Processing {model_name}_fold_{i}...")
