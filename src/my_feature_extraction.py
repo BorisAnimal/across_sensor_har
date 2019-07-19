@@ -7,7 +7,6 @@ from tqdm import tqdm
 
 from src.data.shl_data import shl_min, shl_max, mean, std
 
-
 # Define parameters
 
 x_min = shl_min()[np.newaxis, np.newaxis, :]
@@ -20,12 +19,12 @@ base = "../data/processed/X/hips"
 logger.add("duplex_fe_cv.log", format="{time:YYYY-MM-DD at HH:mm:ss} | {level} | {message}")
 logger.info("Discriminator.")
 
-sensors = {"accel", "gyro", "mag"}
+sens_to_id = {"accel": 0, "gyro": 1, "mag": 2}
 in_sensor = "gyro"
-out_sensors = sensors.difference(set(in_sensor))
-sens_id = 1 # "gyro"
+out_sensors = ["accel", "gyro"]
 
 for out_sensor in out_sensors:
+    sens_id = sens_to_id[out_sensor]
     for i in tqdm(range(5), desc="Folds", leave=False):
         # like this, because here we need EXACT hidden space representation
         model_name = f"{out_sensor}2{out_sensor}_duplex"
@@ -36,7 +35,7 @@ for out_sensor in out_sensors:
 
         model = load_model(f"../models/hips/best_fold{i}_{model_name}")
         feature_encoder = Model(model.input, model.get_layer("features").output)
-        rmses = []
+
         for fname in tqdm(os.listdir(base), desc="files", leave=False):
             arr = np.load(base + "/" + fname)
             x = (arr - x_mean) / x_std
@@ -44,8 +43,7 @@ for out_sensor in out_sensors:
             x = x[:, :, :, sens_id]
             x = x * 2 - 1
 
-
             features = feature_encoder.predict(x)
             np.save(f"{tmp}/{fname}", features)
 
-        logger.info(f"{model_name} fold {i} finished with rmse = {np.mean(rmses)}")
+        logger.info(f"{model_name} fold {i} finished!")
